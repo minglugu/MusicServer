@@ -25,8 +25,9 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping("/login1")
-    public ResponseBodyMessage<User> login1(@RequestParam String username, @RequestParam String password,
-                                           HttpServletRequest request) {
+    public ResponseBodyMessage<User> login1(@RequestParam String username,
+                                            @RequestParam String password,
+                                            HttpServletRequest request) {
         User userLogin = new User();
         userLogin.setUsername(username);
         userLogin.setPassword(password);
