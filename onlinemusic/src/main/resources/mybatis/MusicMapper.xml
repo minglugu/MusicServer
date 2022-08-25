@@ -9,6 +9,10 @@
         insert into music(title, singer, time, url, userid)
         values(#{title}, #{singer}, #{time}, #{url}, #{userid});
     </insert>
+    <!-- check if the inserted song exists in music table-->
+    <select id="select" resultType="com.example.onlinemusic.model.Music">
+        select * from music where title=#{title} and singer=#{singer};
+    </select>
 
 </mapper>
         <!--和Interface一样的名字，所以叫userMapper -->
