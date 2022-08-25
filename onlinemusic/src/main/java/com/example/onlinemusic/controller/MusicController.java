@@ -1,5 +1,6 @@
 package com.example.onlinemusic.controller;
 
+import com.example.onlinemusic.model.User;
 import com.example.onlinemusic.tools.Constant;
 import com.example.onlinemusic.tools.ResponseBodyMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/music")
 public class MusicController {
-    // 使用@Value("${music.local.path}"), 获取到配置文件当中的值。
+    // 使用@Value("${music.local.path}"), 获取到配置文件（application.properties）当中的值。
     @Value("${music.local.path}")
     private String SAVE_PATH;
     // 音乐保存的路径, 用“/”
@@ -32,7 +33,7 @@ public class MusicController {
         // 1. 检查是否登录了
         HttpSession session = request.getSession(false);
         if(session == null || session.getAttribute(Constant.USERINFO_SESSION_KEY) == null) {
-            System.out.println("No login yet!");
+            System.out.println("Not login yet!");
             return new ResponseBodyMessage<>(-1, "请登陆后，再上传音乐文件", false);
         }
 
@@ -51,12 +52,28 @@ public class MusicController {
         }
         try {
             file.transferTo(dest); // 上传文件到目的地
-            return new ResponseBodyMessage<>(0, "上传成功！",true);
+            // return new ResponseBodyMessage<>(0, "上传成功！",true); // 上传文件到数据库的话，就不能return了
         } catch (IOException e) {
             e.printStackTrace();
+            return new ResponseBodyMessage<>(-1, "上传失败", false);
         }
-        return new ResponseBodyMessage<>(-1, "上传失败", false);
+        // 上传文件到数据库的话，就不能return了
+        // return new ResponseBodyMessage<>(-1, "上传失败", false);
 
         // 3. 上传成功后，把文件写到数据库里面。
+        // 3.1 get the field data for a song
+        // 3.1.1 get music title
+        int indexDot = fileNameAndType.lastIndexOf("."); // find the "." before the file type
+        String title = fileNameAndType.substring(0, indexDot);
+
+        // 3.1.2
+        User user = (User) session.getAttribute(Constant.USERINFO_SESSION_KEY);
+        int userid = user.getId();
+
+        // 3.2 播放音乐 -> http request
+        String url = "/music.get?path="+title;
+
+        // 3.2 调用insert
+
     }
 }

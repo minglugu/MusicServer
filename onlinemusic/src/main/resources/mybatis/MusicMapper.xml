@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 要设置是实现接口的具体包名加类名, MusicMapper.xml和MusicMapper这个interface关联起来，目的是，要实现的接口是谁，
+    就写谁的名字-->
+<mapper namespace="com.example.onlinemusic.mapper.MusicMapper">
+
+    <insert id="insert">
+        insert into music(title, singer, time, url, userid)
+        values(#{title}, #{singer}, #{time}, #{url}, #{userid});
+    </insert>
+
+</mapper>
+        <!--和Interface一样的名字，所以叫userMapper -->
+        <!-- reference URL:
+        https://mybatis.org/mybatis-3/sqlmap-xml.html#:~:text=select%20The%20select%20statement%20is%20one%20of%20the,update%20or%20delete%2C%20there%20are%20probably%20many%20selects.-->
