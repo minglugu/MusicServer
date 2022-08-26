@@ -9,6 +9,11 @@
         insert into music(title, singer, time, url, userid)
         values(#{title}, #{singer}, #{time}, #{url}, #{userid});
     </insert>
+
+    <delete id="delete">
+        delete from music where id=#{id};
+    </delete>
+
     <!-- check if the inserted song exists in music table-->
     <select id="select" resultType="com.example.onlinemusic.model.Music">
         select * from music where title=#{title} and singer=#{singer};

@@ -106,7 +106,7 @@ public class MusicController {
 
     // 播放音乐的时候，路径名为：/music/get?path=xxx.mp3
     @RequestMapping("/get")
-    public ResponseEntity<byte[]> func(String path) {
+    public ResponseEntity<byte[]> get(String path) {
         File file = new File(SAVE_PATH + "/" + path);
         byte[] a = null;
         try {
