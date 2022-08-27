@@ -2,7 +2,7 @@ package com.example.onlinemusic.tools;
 
 import lombok.Data;
 
-// generic class
+// generic class:
 @Data
 public class ResponseBodyMessage <T> {
     private int status; // status code, such as 1, 2, 3

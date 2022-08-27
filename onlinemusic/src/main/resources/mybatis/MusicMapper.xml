@@ -10,7 +10,13 @@
         values(#{title}, #{singer}, #{time}, #{url}, #{userid});
     </insert>
 
-    <delete id="delete">
+    <!-- find music by id -->
+    <select id="findMusicById" resultType="com.example.onlinemusic.model.Music">
+        select * from music where id=#{id};
+    </select>
+
+    <!-- delete music by id-->
+    <delete id="deleteMusicById" parameterType="java.lang.Integer">
         delete from music where id=#{id};
     </delete>
 
@@ -18,7 +24,6 @@
     <select id="select" resultType="com.example.onlinemusic.model.Music">
         select * from music where title=#{title} and singer=#{singer};
     </select>
-
 </mapper>
         <!--和Interface一样的名字，所以叫userMapper -->
         <!-- reference URL:

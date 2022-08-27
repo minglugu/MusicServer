@@ -11,6 +11,9 @@ public interface MusicMapper {
 
     // TODO: 查询数据库中，是否已经存在了该首歌曲
 
-    // delete one song from music table.
-    public int delete(int id);
+    // check if this id matches a exising song in the music table
+    public Music findMusicById(int id);
+
+    // delete song from music table.
+    public int deleteMusicById(int musicId);
 }

@@ -1,9 +1,11 @@
 package com.example.onlinemusic.controller;
 
 import com.example.onlinemusic.mapper.MusicMapper;
+import com.example.onlinemusic.model.Music;
 import com.example.onlinemusic.model.User;
 import com.example.onlinemusic.tools.Constant;
 import com.example.onlinemusic.tools.ResponseBodyMessage;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/music")
@@ -119,5 +122,77 @@ public class MusicController {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    // delete a song/music from music table
+    @RequestMapping("/delete")
+    public ResponseBodyMessage<Boolean> deleteMusicById(@RequestParam String id) {
+        // 1. 先检查音乐是否存在？
+        int intId = Integer.parseInt(id);
+
+        // 2. 如果存在，要进行删除
+        Music music = musicMapper.findMusicById(intId);
+        if(music == null) {
+            System.out.println("没有这个id的音乐！");
+           return new ResponseBodyMessage<>(-1, "Song is not found!", false);
+        }else {
+            // 2.1 删除数据库
+            int ret = musicMapper.deleteMusicById(intId);
+            if(ret == 1) {
+                // 2.2 删除服务器上的数据
+                // String fileName = music.getTitle();
+                int index = music.getUrl().lastIndexOf("=");
+                String fileName = music.getUrl().substring(index+1);
+
+                File file = new File(SAVE_PATH + "/" + fileName + ".mp3"); // get the url of the song
+                System.out.println("当前的路径是: " + file.getPath());
+
+                // use delete() in File class to delete the song from server
+                if(file.delete()) {
+                    return new ResponseBodyMessage<>(0, "Deleted a song from music table of " +
+                            "database onlinemusic", true);
+                }else {
+                    return new ResponseBodyMessage<>(-1, "Failed to delete a song from databse", false);
+                }
+            }else {
+                return new ResponseBodyMessage<>(-1, "Failed to delete a song from databse", false);
+            }
+        }
+    }
+    /*
+     * delete all the selected music
+     * @param id [1,3,5,7]
+     * */
+    @RequestMapping("/deleteSel")
+    public ResponseBodyMessage<Boolean> deleteSelMusic(@RequestParam("id[]") List<Integer> id) {
+        int sum = 0;
+        for (int i = 0; i < id.size(); i++) {
+            Music music = musicMapper.findMusicById(id.get(i));
+            if (music == null) {
+                System.out.println("No song matches with this id.");
+                return new ResponseBodyMessage<>(-1, "", false);
+            }
+            // 1. delete songs from database
+            int ret = musicMapper.deleteMusicById(id.get(i));
+            if (ret == 1) {
+                // 2. delete songs from server
+                // String fileName = music.getTitle();
+                int index = music.getUrl().lastIndexOf("=");
+                String fileName = music.getUrl().substring(index+1);
+                File file = new File(SAVE_PATH + "/" + fileName + ".mp3"); // get the url of the song
+
+                if(file.delete()) {
+                    sum+=ret;
+                    // return new ResponseBodyMessage<>(0, "Deleted a song from music table of database onlinemusic", true);
+                }else {
+                    return new ResponseBodyMessage<>(-1, "Failed to delete a song from databse", false);
+                }
+            }
+        }
+        if(sum == id.size()) {
+            return new ResponseBodyMessage<>(0, "Deleted a song from music table of database onlinemusic", true);
+        }else {
+            return new ResponseBodyMessage<>(-1, "Deleting songs is failed.", false);
+        }
     }
 }
