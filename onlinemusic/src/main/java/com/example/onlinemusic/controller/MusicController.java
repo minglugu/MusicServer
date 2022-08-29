@@ -199,4 +199,16 @@ public class MusicController {
             return new ResponseBodyMessage<>(-1, "Failed to eelete songs.", false);
         }
     }
+
+    // @RequestParam(required = false) allows no input in the search box. Default value required = true
+    @RequestMapping("/findMusic")
+    public ResponseBodyMessage<List<Music>> findMusic(@RequestParam(required = false) String musicName) {
+        List<Music> musicList = null;
+        if (musicName != null) {
+            musicList = musicMapper.findMusicByName(musicName);
+        }else {
+            musicList = musicMapper.findAllMusic();
+        }
+        return new ResponseBodyMessage<>(0,"Find all music/songs", musicList);
+    }
 }
