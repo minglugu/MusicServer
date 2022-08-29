@@ -78,4 +78,29 @@ public class LoveMusicController {
 
         return new ResponseBodyMessage<>(0,"Find all music", musicList);
     }
+
+    /*
+     * @param id is music id
+     *
+     */
+    @RequestMapping("/deletelovemusic")
+    public ResponseBodyMessage<Boolean> deleteLoveMusic(@RequestParam String id, HttpServletRequest request) {
+        int musicId = Integer.parseInt(id);
+        HttpSession httpSession = request.getSession(false);
+        if(httpSession == null) {
+            System.out.println("没有登录！");
+            return new ResponseBodyMessage<>(-1, "Please log in to delete the lovemusic list!", false);
+        }
+
+        User user = (User) httpSession.getAttribute(Constant.USERINFO_SESSION_KEY);
+        int userId = user.getId();
+        System.out.println("userId" + userId);
+
+        int ret = loveMusicMapper.deleteLoveMusic(userId, musicId);
+        if(ret == 1) {
+            return new ResponseBodyMessage<>(0, "Succeed to delete the lovemusic", true);
+        }else {
+            return new ResponseBodyMessage<>(-1, "Failed to delete the lovemusic", false);
+        }
+    }
 }
