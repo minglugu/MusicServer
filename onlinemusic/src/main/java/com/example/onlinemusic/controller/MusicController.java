@@ -185,14 +185,18 @@ public class MusicController {
                     sum+=ret;
                     // return new ResponseBodyMessage<>(0, "Deleted a song from music table of database onlinemusic", true);
                 }else {
-                    return new ResponseBodyMessage<>(-1, "Failed to delete a song from databse", false);
+                    return new ResponseBodyMessage<>(-1, "Failed to delete a song from the server", false);
                 }
+            }else {
+                // ret != 1: faled to delete songs from database
+                return new ResponseBodyMessage<>(-1, "Failed to delete songs from database", false);
             }
         }
         if(sum == id.size()) {
-            return new ResponseBodyMessage<>(0, "Deleted a song from music table of database onlinemusic", true);
+            System.out.println("Deleted all selected songs");
+            return new ResponseBodyMessage<>(0, "Deleted selected songs", true);
         }else {
-            return new ResponseBodyMessage<>(-1, "Deleting songs is failed.", false);
+            return new ResponseBodyMessage<>(-1, "Failed to eelete songs.", false);
         }
     }
 }

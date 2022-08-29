@@ -24,6 +24,17 @@
     <select id="select" resultType="com.example.onlinemusic.model.Music">
         select * from music where title=#{title} and singer=#{singer};
     </select>
+
+    <!--    // find all music if no input of music name or partial name 模糊查询-->
+    <select id="findAllMusic" resultType="com.example.onlinemusic.model.Music">
+        select * from music;
+    </select>
+
+    <!--    // find music by name or partial name (musicName is the parameter of in MusicMapper interface)-->
+    <select id="findMusicByName" resultType="com.example.onlinemusic.model.Music">
+        select * from music where title like concat('%', #{musicName}, '%');
+    </select>
+
 </mapper>
         <!--和Interface一样的名字，所以叫userMapper -->
         <!-- reference URL:
