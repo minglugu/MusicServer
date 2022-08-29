@@ -203,6 +203,7 @@ public class MusicController {
     // @RequestParam(required = false) allows no input in the search box. Default value required = true
     @RequestMapping("/findMusic")
     public ResponseBodyMessage<List<Music>> findMusic(@RequestParam(required = false) String musicName) {
+        // 没有获取session，是因为不需要user id
         List<Music> musicList = null;
         if (musicName != null) {
             musicList = musicMapper.findMusicByName(musicName);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lovemusic")
@@ -52,5 +53,29 @@ public class LoveMusicController {
         }else {
             return new ResponseBodyMessage<>(-1, "Failed to save/love the music!", false);
         }
+    }
+
+    @RequestMapping("/findlovemusic")
+    public ResponseBodyMessage<List<Music>> findLoveMusic(@RequestParam(required = false) String musicName,
+                                                          HttpServletRequest request) {
+        // 1. check if a user logged in
+        HttpSession httpSession = request.getSession(false);
+        if(httpSession == null || httpSession.getAttribute(Constant.USERINFO_SESSION_KEY) == null) {
+            System.out.println("没有登录！");
+            return new ResponseBodyMessage<>(-1, "Please log in to search music!", null);
+        }
+
+        User user = (User) httpSession.getAttribute(Constant.USERINFO_SESSION_KEY);
+        int userId = user.getId();
+        System.out.println("userId" + userId);
+
+        List<Music> musicList = null;
+        if (musicName == null) {
+            musicList = loveMusicMapper.findLoveMusicByUserId(userId);
+        }else {
+            musicList = loveMusicMapper.findLoveMusicByKeyAndUID(musicName, userId);
+        }
+
+        return new ResponseBodyMessage<>(0,"Find all music", musicList);
     }
 }
