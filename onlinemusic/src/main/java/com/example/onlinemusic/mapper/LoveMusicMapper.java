@@ -20,5 +20,9 @@ public interface LoveMusicMapper {
     List<Music> findLoveMusicByKeyAndUID(String musicName, int userId);
 
     // 取消某个用户喜欢的音乐收藏
+    // return 返回收影响的行数
     int deleteLoveMusic(int userId, int musicId);
+
+    // 当删除库中的音乐时，同步删除lovemusic表中的数据, 返回值为删除了多少条数据
+    int deleteLoveMusicByMusicId(int musicId);
 }

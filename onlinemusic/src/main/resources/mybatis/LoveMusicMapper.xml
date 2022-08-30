@@ -12,6 +12,10 @@
         delete from lovemusic where user_id=#{userId} and music_id=#{musicId};
     </delete>
 
+    <!-- 根据musicId，删除loveMusic表中的收藏的该歌曲 -->
+    <delete id="deleteLoveMusicByMusicId" parameterType="java.lang.Integer">
+        delete from lovemusic where music_id=#{musicId};
+    </delete>
 
     <!--根据用户 ID 和音乐 ID 查询收藏的音乐-->
     <select id="findLoveMusicByMusicAndUserId" resultType="com.example.onlinemusic.model.Music">

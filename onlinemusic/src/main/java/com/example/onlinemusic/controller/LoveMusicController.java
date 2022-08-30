@@ -23,7 +23,8 @@ public class LoveMusicController {
     @Resource
     private LoveMusicMapper loveMusicMapper;
 
-    @RequestMapping("/likeMusic")
+    // save the selected music to the lvoemusic table
+    @RequestMapping("/likemusic")
     public ResponseBodyMessage<Boolean> likeMusic(@RequestParam String id, HttpServletRequest request) {
         // cast String id to integer musicId
         int musicId = Integer.parseInt(id);

@@ -1,5 +1,6 @@
 package com.example.onlinemusic.controller;
 
+import com.example.onlinemusic.mapper.LoveMusicMapper;
 import com.example.onlinemusic.mapper.MusicMapper;
 import com.example.onlinemusic.model.Music;
 import com.example.onlinemusic.model.User;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -35,6 +37,9 @@ public class MusicController {
 
     @Autowired
     private MusicMapper musicMapper;
+
+    @Resource
+    private LoveMusicMapper loveMusicMapper;
 
     // 前端那里会获取upload.html里面 <input type="file" name="filename"/> filename这个属性，否则不会获取这个文件。
     @RequestMapping("/upload")
@@ -149,6 +154,8 @@ public class MusicController {
 
                 // use delete() in File class to delete the song from server
                 if(file.delete()) {
+                    // meanwhile, delete the song from lovemusic table
+                    loveMusicMapper.deleteLoveMusicByMusicId(intId);
                     return new ResponseBodyMessage<>(0, "Deleted a song from music table of " +
                             "database onlinemusic", true);
                 }else {
@@ -167,13 +174,14 @@ public class MusicController {
     public ResponseBodyMessage<Boolean> deleteSelMusic(@RequestParam("id[]") List<Integer> id) {
         int sum = 0;
         for (int i = 0; i < id.size(); i++) {
-            Music music = musicMapper.findMusicById(id.get(i));
+            int musicId = id.get(i);
+            Music music = musicMapper.findMusicById(musicId);
             if (music == null) {
                 System.out.println("No song matches with this id.");
                 return new ResponseBodyMessage<>(-1, "", false);
             }
             // 1. delete songs from database
-            int ret = musicMapper.deleteMusicById(id.get(i));
+            int ret = musicMapper.deleteMusicById(musicId);
             if (ret == 1) {
                 // 2. delete songs from server
                 // String fileName = music.getTitle();
@@ -182,6 +190,8 @@ public class MusicController {
                 File file = new File(SAVE_PATH + "/" + fileName + ".mp3"); // get the url of the song
 
                 if(file.delete()) {
+                    // 同步检查lovemusic表中，是否存在这个音乐。
+                    loveMusicMapper.deleteLoveMusicByMusicId(musicId);
                     sum+=ret;
                     // return new ResponseBodyMessage<>(0, "Deleted a song from music table of database onlinemusic", true);
                 }else {
