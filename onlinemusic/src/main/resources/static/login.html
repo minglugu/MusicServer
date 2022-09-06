@@ -23,23 +23,24 @@
       </style>
     <script>
 		  // 核心业务逻辑
+		  // 登录请求: $(fucntion() {} 当 DOM 加载完毕后执行)
 		  $(function(){
-			  $("#submit").click(function(){
+			  $("#submit").click(function () {
 				  var username = $("#user").val();
 				  var password = $("#password").val();
 
 				  if(username.trim() == "" || password.trim() == "") {
 					  alert("用户名或者密码不能为空！");
-					  return;
+					  return false;
 				  }
 
 				  $.ajax({
-					  url:"/user/login",        //请求的路径
-					  data:{"username":username,"password":password}, // 发送给服务器的数据
+					  url:"/user/login",        //指定的请求路径
+					  data:{"username":username,"password":password}, //发送给服务器的数据
 					  type:"POST",              //请求方式
-					  dataType:"json",          //预期服务器返回的数据类型
+					  dataType:"json",          //服务器返回的数据类型是JSON
 					  success:function(data) {  //data就是拿了服务器返回的数据
-						  console.log(data);
+						  console.log("服务器返回的数据", data);
 						  if(data.status == 0) {
 							  alert("登录成功！");
 							  //跳转到指定的页面了
