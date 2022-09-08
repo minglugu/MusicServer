@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/hhhh")
 public class TestController {
 
-    @RequestMapping("/login")
+    @RequestMapping("/test1")
     public ResponseBodyMessage<User> login(@RequestParam String username,
                                            @RequestParam String password) {
         System.out.println("username" + username);
@@ -24,7 +24,7 @@ public class TestController {
 
             return new ResponseBodyMessage<>(0, "Successful login.", user);
         }else{
-            return new ResponseBodyMessage<>(0, "Failed to login.", null);
+            return new ResponseBodyMessage<>(-1, "Failed to login.", null);
         }
     }
 }

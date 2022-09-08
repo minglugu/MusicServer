@@ -5,8 +5,6 @@
     <script src="js/jquery-3.1.1.min.js"></script>
     <!-- 3. 导入bootstrap的js文件 -->
     <!--<script src="js/bootstrap.min.js"></script>-->
-    <script type="text/javascript"></script>
-
 
     <script>
 		  
@@ -14,12 +12,14 @@
 			  $("#submit").click(function () {
 				    var username = $("#user").val();
 				    var password = $("#password").val();				 
-					alert("username:" + username + " password: " + password);
+					
+                    alert("username:" + username + " password: " + password);
+                    
                     console.log("用户名: ", username);
                     console.log("密码: ", password);
 
 				    $.ajax({
-					    url:"/hhh/test",        //指定的请求路径
+					    url:"/hhhh/test1",        //指定的请求路径
 					    data:{"username":username,"password":password}, //发送给服务器的数据
 					    type:"POST",              //请求方式
 					    dataType:"json",          //服务器返回的数据类型是JSON

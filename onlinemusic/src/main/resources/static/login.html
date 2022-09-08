@@ -23,10 +23,42 @@
               background-attachment: fixed;*/
       }
       </style>
-	  <script>
-		  <!-- 核心业务逻辑 -->
-		  
-	  </script>
+		<script>
+			// 核心业务逻辑 
+			$(function(){
+				$("#submit").click(function(){
+					// 获取id为user的值
+					var username = $("#user").val();
+					var password = $("#password").val();
+
+					// trim the space of input values
+					if (username.trim() == "" || password.trim() == "") {
+						alert("用户名或密码不能为空！");
+						return;
+					}
+
+					$.ajax({
+						url: "/user/login",
+						data: {"username": username, "password": password },
+						type: "POST",
+						dataType: "JSON",
+						success: function(data) {
+							console.log(data);
+							if (data.status == 0) {
+								alert("登录成功！");
+								// 跳转到指定页面
+								window.location.href="list.html";
+							}else{
+								alert("登录失败，密码或用户名错误！");
+								$("#user").val("");
+								$("#password").val("");
+							}
+						}
+					});
+				});
+			});
+	  	</script>
+
   </head>
   <body id="body">
   	<div class="container" style="width: 400px;margin-top: 110px;background-color: rgba(255,255,255,0.8)">
