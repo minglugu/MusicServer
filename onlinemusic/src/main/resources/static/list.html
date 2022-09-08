@@ -31,7 +31,24 @@
     </style>
 
     <script type="text/javascript">
-        <!-- 核心代码实现 -->
+        // 核心代码实现 
+        $(function(){
+            load();
+        });
+
+        // musicName可以传参，也可以不传参
+        function load(musicName) {
+            
+            $.ajax({
+                url: "/music/findmusic",
+				data: {"musicName": musicName},
+				type: "GET",
+				dataType: "JSON",
+                success: function(obj) {
+                    console.log(obj);
+                }
+            });
+        }
 		
     </script>
 </head>
@@ -60,6 +77,17 @@
             <th>歌手</th>
             <th>歌曲</th>
             <th>操作</th>
+        </tr>
+
+        <tr>
+            <th> <input type="checkbox" id="1"> </th>
+            <td> 成都 </td>
+            <td> 赵雷 </td>
+            <td> <button class="btn btn-primary" onclick="playerSong('+musicUrl+')">播放歌曲</button> </td>
+            <td> <button class="btn btn-primary" onclick="deleteInfo('+musicUrl+')">删除</button> 
+                 <button class="btn btn-primary" onclick="loveInfo('+musicUrl+')">喜欢</button>
+            </td>
+
         </tr>
         <tbody id="info" valign="middle">
 
