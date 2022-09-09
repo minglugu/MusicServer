@@ -7,6 +7,7 @@ import com.example.onlinemusic.model.User;
 import com.example.onlinemusic.tools.Constant;
 import com.example.onlinemusic.tools.ResponseBodyMessage;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +47,8 @@ public class MusicController {
     @RequestMapping("/upload")
     public ResponseBodyMessage<Boolean> insertMusic(@RequestParam String singer,
                                                     @RequestParam("filename") MultipartFile file,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse resp) throws IOException {
 
         // 1. 检查是否登录了
         HttpSession session = request.getSession(false);
@@ -99,15 +102,21 @@ public class MusicController {
         System.out.println("当前的时间为: " + time);
 
         // 3.2 调用MusicMapper中的insert()
-        int ret = 0;
-        ret = musicMapper.insert(title, singer, time, url, userid);
-
-        if (ret == 1) {
-            // TODO 这里应该跳转到音乐列表的页面
-            return new ResponseBodyMessage<>(0, "成功上传到数据库！",true);
-        } else {
-            return new ResponseBodyMessage<>(-1, "上传数据库失败！",false);
+        try {
+            int ret = 0;
+            ret = musicMapper.insert(title, singer, time, url, userid);
+            if (ret == 1) {
+                // TODO 这里应该跳转到音乐列表的页面
+                resp.sendRedirect("/list.html");
+                return new ResponseBodyMessage<>(0, "成功上传到数据库！",true);
+            } else {
+                return new ResponseBodyMessage<>(-1, "上传数据库失败！",false);
+            }
+        } catch (BindingException e) {
+            dest.delete();
+            return new ResponseBodyMessage<>(-1, "数据库上传失败", false);
         }
+
 
         // 重复上传歌曲，能否成功？ yes
     }

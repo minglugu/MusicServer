@@ -40,11 +40,11 @@
         function load(musicName) {
             
             $.ajax({
-                url: "/music/findmusic",
-				data: {"musicName": musicName},
-				type: "GET",
-				dataType: "JSON",
-                success: function(obj) {
+                url:"/music/findMusic",
+				data:{"musicName":musicName},
+				type:"GET",
+				dataType:"JSON",
+                success:function(obj) {
                     console.log(obj);
                 }
             });
