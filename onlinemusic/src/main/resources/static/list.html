@@ -46,6 +46,27 @@
 				dataType:"JSON",
                 success:function(obj) {
                     console.log(obj);
+                    var data = obj.data; // data is an array
+
+                    // 拼接成html
+                    var str = '';
+                    // data[i].id  data[i].singer data[i].title ...
+                    for(var i = 0; i < data.length; i++) {
+
+                        var musicUrl = data[i].url + ".mp3";
+
+                        str += '<tr>';
+                        str += '<th> <input id=" ' + data[i].id + '" type = "checkbox"> </th>';
+                        str += '<td>' + data[i].title + '</td>';
+                        str += '<td>' + data[i].singer + '</td>';
+                        // musicUrl is string 
+                        str += '<td> <button class="btn btn-primary" onclick="playerSong(\''+ musicUrl+ '\')" >播放歌曲</button> </td>'; 
+                        str += '<td> <button class="btn btn-primary" onclick="deleteInfo('+ data[i].id + ')" >删除</button>'+ ' ' +
+                                '<button class="btn btn-primary" onclick="loveInfo('+ data[i].id + ')" >喜欢</button> </td>'; 
+                        str += '</tr>';
+                    }
+                    // 把拼接好的页面添加到info的id下
+                    $("#info").html(str);
                 }
             });
         }

@@ -64,7 +64,7 @@ public class MusicController {
 
         System.out.println("fileNameAndType: " + fileNameAndType);
 
-        String path = SAVE_PATH + fileNameAndType;
+        String path = SAVE_PATH + "/" + fileNameAndType;
 
         File dest = new File(path);
         // 不存在的情况下,创建一个目录
@@ -106,7 +106,7 @@ public class MusicController {
             int ret = 0;
             ret = musicMapper.insert(title, singer, time, url, userid);
             if (ret == 1) {
-                // TODO 这里应该跳转到音乐列表的页面
+                // 这里应该跳转到音乐列表的页面
                 resp.sendRedirect("/list.html");
                 return new ResponseBodyMessage<>(0, "成功上传到数据库！",true);
             } else {
@@ -116,8 +116,6 @@ public class MusicController {
             dest.delete();
             return new ResponseBodyMessage<>(-1, "数据库上传失败", false);
         }
-
-
         // 重复上传歌曲，能否成功？ yes
     }
 
