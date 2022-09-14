@@ -93,7 +93,7 @@ public class MusicController {
         int userid = user.getId();
 
         // 3.2 播放音乐 -> http request
-        String url = "/music.get?path="+title;
+        String url = "/music/get?path="+title;
 
         // format the time year, month and date
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
