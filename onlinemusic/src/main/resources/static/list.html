@@ -36,15 +36,15 @@
             load();
         });
 
-        // musicName可以传参，也可以不传参
+        // load the music. musicName可以传参，也可以不传参
         function load(musicName) {
             
             $.ajax({
-                url:"/music/findMusic",
-				data:{"musicName":musicName},
-				type:"GET",
-				dataType:"JSON",
-                success:function(obj) {
+                url: "/music/findMusic",
+				data: {"musicName": musicName},
+				type: "get",
+				dataType: "json",
+                success: function(obj) {
                     console.log(obj);
                     var data = obj.data; // data is an array
 
@@ -61,9 +61,9 @@
                         str += '<td>' + data[i].singer + '</td>';
                         // musicUrl is string 
                         str += '<td> <button class = "btn btn-primary"  onclick="playerSong(\''+musicUrl+'\')"> 播放歌曲 </button>' +'</td>'; 
-                        str += '<td> <button class = "btn btn-primary"  onclick="deleteInfo('+data[i].id+')"> 删除 </button>' +
+                        str += '<td> <button class = "btn btn-primary"  onclick="deleteInfo('+data[i].id+')"> 删除 </button>' + ' ' +
                         '<button class = "btn btn-primary"  onclick="loveInfo('+data[i].id+')"> 喜欢 </button>' +'</td>';
-                        str += "</tr>";
+                        str += '</tr>';
                     }
                     // 把拼接好的页面添加到info的id下
                     $("#info").html(str);
@@ -71,7 +71,7 @@
             });
         }
     
-        // obj is musicUrl 
+        // play the selected music. obj is musicUrl 
         function playerSong(obj) {
         
             var name = obj.substring(obj.lastIndexOf("=")+1);
@@ -79,7 +79,7 @@
             SewisePlayer.toPlay(obj, name, 0, true);
         }
 
-        // obj is id
+        // delete the selected music. obj is id
         function deleteInfo(obj) {
             console.log(obj);
 
@@ -103,13 +103,65 @@
             });
         }
 
-        // 
+        // 模糊查询功能 find music
+        $(function() {
+            $("#submit1").click(function(){
+                var musicName = $("exampleInputName2").val();
+                load(musicName); // load the music that matches the keyword 
+            });
+
+            // 删除选中的音乐（选择的“checkbox”，以及“删除选中”的按钮）,需要获取每一行，checkbox所对应的id
+            // 获取到（） input标签，checkbox类型的所有的id
+            // 当load这个函数执行成功，再执行done中的回调函数（function）
+            $.when(load).done(function(){
+                $("#delete").click(function(){
+                    //因为删除的是多条选中的音乐，所以要定义一个数组
+                    var id = new Array();
+                    var i = 0; // 数组的index
+
+                    // 用each，遍历input标签下，类型是checkbox
+                    $('input:checkbox').each(function(){
+                        // 用这个方法，知道这个checkbox是否被选中,this代表的是每个input
+                        // 如果被选中，this代表发生事件的dom元素<input>
+                        if ($(this).is(":checked")) {
+                            // 获取选中的id的值
+                            // 这个"id"就是这个str += '<th> <input id="' + data[i].id + '" type = "checkbox"> </th>';
+                            // 里面的data[i].id的值。
+                            id[i] = $(this).attr("id");
+                            i++;
+                        }
+                    });
+                    console.log(id);
+
+                    // 给后端发请求，删除选中的音乐
+                    $.ajax({
+                        url:"/music/deleteSel",
+                        data: {"id": id},
+                        dataType: "json",
+                        type: "post",
+
+                        success: function(obj) {
+                            if(obj.data == true) {
+                                alert("删除成功！");
+                                window.location.href = "list.html";
+                            }else{
+                                alert("删除失败！");
+                            }
+                        }
+                    });
+                });
+            });
+        });
+        
+
+        // save the loved music
 		function loveInfo(obj) {
             console.log(obj);
 
             $.ajax({
                 url:"/lovemusic/likemusic",
-                type: "get",
+                type: "post",
+                // 发给后端的数据
                 data: {"id": obj},
                 dataType: "json",
 
@@ -119,9 +171,9 @@
                     if(val.data == true) {
                         // love music is successful
                         alert("成功收藏喜爱的音乐！");
-                        window.location.href = "loveMusic";
+                        window.location.href = "list.html";
                     }else{
-                        alert("收藏失败");
+                        alert("收藏失败或者已经存在此音乐");
                     }
                 }
             });
