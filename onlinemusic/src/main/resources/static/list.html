@@ -71,13 +71,61 @@
             });
         }
     
+        // obj is musicUrl 
         function playerSong(obj) {
         
             var name = obj.substring(obj.lastIndexOf("=")+1);
             // obj: 播放音乐的url   name: 音乐名称    0:播放开始的时间     false: 不自动播放
             SewisePlayer.toPlay(obj, name, 0, true);
         }
-		
+
+        // obj is id
+        function deleteInfo(obj) {
+            console.log(obj);
+
+            $.ajax({
+                url: "/music/delete",
+                type: "post",
+                data: {"id": obj},
+                dataType:"json",
+                
+                success: function(val) {
+                    console.log(val);
+
+                    if(val.data == true) {
+                        // 删除成功！
+                        alert("删除成功，重新加载当前页面！");
+                        window.location.href = "list.html";
+                    }else{
+                        alert("删除失败！");
+                    }
+                }
+            });
+        }
+
+        // 
+		function loveInfo(obj) {
+            console.log(obj);
+
+            $.ajax({
+                url:"/lovemusic/likemusic",
+                type: "get",
+                data: {"id": obj},
+                dataType: "json",
+
+                success: function(val) {
+                    console.log(val);
+
+                    if(val.data == true) {
+                        // love music is successful
+                        alert("成功收藏喜爱的音乐！");
+                        window.location.href = "loveMusic";
+                    }else{
+                        alert("收藏失败");
+                    }
+                }
+            });
+        }
     </script>
 </head>
 
