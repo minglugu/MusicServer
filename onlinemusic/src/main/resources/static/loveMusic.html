@@ -29,6 +29,76 @@
         }
     </style>
     <script>
+        // 核心代码 load()
+        $(function() {
+            load();
+        });
+
+        // load the music. musicName可以传参，也可以不传参
+        function load(musicName) {
+            
+            $.ajax({
+                url: "/lovemusic/findloveMusic",
+				data: {"musicName": musicName},
+				type: "get",
+				dataType: "json",
+                success: function(obj) {
+                    console.log(obj);
+                    var data = obj.data; // data is an array
+
+                    // 拼接成html
+                    var str = '';
+                    // data[i].id  data[i].singer data[i].title ...
+                    for(var i = 0; i < data.length; i++) {
+
+                        var musicUrl = data[i].url + ".mp3";
+                        console.log(musicUrl);
+
+                        str += '<tr>';
+                        str += '<td>' + data[i].title + '</td>';
+                        str += '<td>' + data[i].singer + '</td>';
+                        // musicUrl is string 
+                        str += '<td> <button class = "btn btn-primary"  onclick="playerSong(\''+musicUrl+'\')"> 播放歌曲 </button>' +'</td>'; 
+                        str += '<td> <button class = "btn btn-primary"  onclick="deleteInfo('+data[i].id+')"> 移除 </button>';
+                        str += '</tr>';
+                    }
+                    // 把拼接好的页面添加到info的id下
+                    $("#info").html(str);
+                }
+            });
+            // play the selected music. obj is musicUrl 
+            function playerSong(obj) {
+        
+            var name = obj.substring(obj.lastIndexOf("=")+1);
+            // obj: 播放音乐的url   name: 音乐名称    0:播放开始的时间     false: 不自动播放
+            SewisePlayer.toPlay(obj, name, 0, true);
+            }
+
+            function deleteInfo(obj) {
+            console.log(obj);
+
+            $.ajax({
+                url: "/lovemusic/deletelovemusic",
+                type: "post",
+                data: {"id": obj},
+                dataType:"json",
+                
+                success: function(val) {
+                    console.log(val);
+
+                    if(val.data == true) {
+                        // 删除成功！
+                        alert("删除成功，重新加载当前页面！");
+                        window.location.href = "list.html";
+                    }else{
+                        alert("移除失败！");
+                    }
+                }
+            });
+        }
+
+        }
+
         
     </script>
 </head>
