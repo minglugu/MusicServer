@@ -28,6 +28,7 @@
             text-align: center;
         }
     </style>
+
     <script>
         // 核心代码 load()
         $(function() {
@@ -38,7 +39,7 @@
         function load(musicName) {
             
             $.ajax({
-                url: "/lovemusic/findloveMusic",
+                url: "/lovemusic/findlovemusic",
 				data: {"musicName": musicName},
 				type: "get",
 				dataType: "json",
@@ -66,15 +67,16 @@
                     $("#info").html(str);
                 }
             });
-            // play the selected music. obj is musicUrl 
-            function playerSong(obj) {
-        
+        }
+
+        // play the selected music. obj is musicUrl 
+        function playerSong(obj) {        
             var name = obj.substring(obj.lastIndexOf("=")+1);
             // obj: 播放音乐的url   name: 音乐名称    0:播放开始的时间     false: 不自动播放
             SewisePlayer.toPlay(obj, name, 0, true);
-            }
+        }
 
-            function deleteInfo(obj) {
+        function deleteInfo(obj) {
             console.log(obj);
 
             $.ajax({
@@ -85,7 +87,7 @@
                 
                 success: function(val) {
                     console.log(val);
-
+                
                     if(val.data == true) {
                         // 删除成功！
                         alert("删除成功，重新加载当前页面！");
@@ -97,11 +99,59 @@
             });
         }
 
-        }
+        // 模糊查询功能 find music
+        $(function() {
+            $("#submit1").click(function(){
+                var musicName = $("#exampleInputName2").val();
+                load(musicName); // load the music that matches the keyword 
+            });
 
-        
+            // 删除选中的音乐（选择的“checkbox”，以及“删除选中”的按钮）,需要获取每一行，checkbox所对应的id
+            // 获取到（） input标签，checkbox类型的所有的id
+            // 当load这个函数执行成功，再执行done中的回调函数（function）
+            $.when(load).done(function(){
+                $("#delete").click(function(){
+                    //因为删除的是多条选中的音乐，所以要定义一个数组
+                    var id = new Array();
+                    var i = 0; // 数组的index
+
+                    // 用each，遍历input标签下，类型是checkbox
+                    $('input:checkbox').each(function(){
+                        // 用这个方法，知道这个checkbox是否被选中,this代表的是每个input
+                        // 如果被选中，this代表发生事件的dom元素<input>
+                        if ($(this).is(":checked")) {
+                            // 获取选中的id的值
+                            // 这个"id"就是这个str += '<th> <input id="' + data[i].id + '" type = "checkbox"> </th>';
+                            // 里面的data[i].id的值。
+                            id[i] = $(this).attr("id");
+                            i++;
+                        }
+                    });
+                    console.log(id);
+
+                    // 给后端发请求，删除选中的音乐
+                    $.ajax({
+                        url:"/music/deleteSel",
+                        data: {"id": id},
+                        dataType: "json",
+                        type: "post",
+
+                        success: function(obj) {
+                            if(obj.data == true) {
+                                alert("删除成功！");
+                                window.location.href = "list.html";
+                            }else{
+                                alert("删除失败！");
+                            }
+                        }
+                    });
+                });
+            });
+        });
+                
     </script>
 </head>
+
 <body>
 <div class="container">
     <h3 style="text-align: center">我喜欢的音乐列表</h3>
@@ -145,5 +195,21 @@
     </table>
 </div>
 </body>
+
+<!-- mp3 player -->>
+<div style="width: 180px; height: 140px; position:absolute; bottom:10px; right:10px">
+    <script type="text/javascript" src="player/sewise.player.min.js"></script>
+    <script type="text/javascript">
+        SewisePlayer.setup({
+            server: "vod",  //值为vod时播放器将启用点播模式
+            type: "mp3",
+            //这里是默认的一个网址
+            videourl:"http://jackzhang1204.github.io/materials/where_did_time_go.mp3",
+            skin: "vodWhite",
+            //这里需要设置false, 就不需要自动播放
+            autostart:"false",
+        });
+    </script>
+</div>
 
 </html>

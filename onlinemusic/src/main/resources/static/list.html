@@ -93,7 +93,7 @@
                     console.log(val);
 
                     if(val.data == true) {
-                        // 删除成功！
+                        // 删除成功！ 跳转到list.html页面
                         alert("删除成功，重新加载当前页面！");
                         window.location.href = "list.html";
                     }else{
@@ -106,7 +106,7 @@
         // 模糊查询功能 find music
         $(function() {
             $("#submit1").click(function(){
-                var musicName = $("exampleInputName2").val();
+                var musicName = $("#exampleInputName2").val();
                 load(musicName); // load the music that matches the keyword 
             });
 
@@ -178,6 +178,7 @@
                 }
             });
         }
+        
     </script>
 </head>
 
