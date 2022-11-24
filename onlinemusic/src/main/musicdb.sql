@@ -1,3 +1,20 @@
+-- 在云服务器上，部署mysql。
+-- 安装步骤：https://cloud.tencent.com/developer/article/1496725
+-- 安装视频：https://www.youtube.com/watch?v=B9be7XBiYQU
+-- https://www.youtube.com/watch?v=B9be7XBiYQU
+-- wget https://dev.mysql.com/get/mysql80-community-release-el7-7.noarch.rpm  (find download link in mysql yum install)
+-- rpm -ivh mysql80-community-release-el7-7.noarch.rpm
+-- cd /etc/yum.repos.d/
+-- ll to check mysql
+-- it will show two files: mysql-community.repo
+--                         mysql-community-source.repo
+
+-- start mysql: systemctl enable mysqld.service
+
+-- 输入CLI:
+--  mysql -u root -p
+-- Enter password:
+
 -- create database for online music
 drop database if exists `onlinemusic`;
 create database if not exists `onlinemusic` character set utf8;
